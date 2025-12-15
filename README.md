@@ -44,7 +44,7 @@ Each example shows the transformation of a content image into a stylized output 
 The plot below shows the perceptual loss trend during training, demonstrating stable convergence.
 
 <p align="center">
-  <img src="images/extended_loss_plot.png" width="85%">
+  <img src="images/extended_loss_plot_1.png" width="85%">
 </p>
 
 > ⚠️ If this image does not load, rename the file to **extended_loss_plot.png**
