@@ -1,6 +1,6 @@
-# 🎨 Fast Neural Style Transfer (PyTorch)
+# 🎨 Neural Canvas
 
-A **Fast Neural Style Transfer** implementation in **PyTorch** that generates stylized images in **real time** using a feed-forward neural network trained with **perceptual loss**.
+A **Neural Style Transfer** implementation in **PyTorch** that generates stylized images in **real time** using a feed-forward neural network trained with **perceptual loss**.
 
 Inspired by *Johnson et al., 2016*, this approach trains a single network per style to perform instant stylization, unlike optimization-based neural style transfer methods.
 
