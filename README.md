@@ -47,9 +47,6 @@ The plot below shows the perceptual loss trend during training, demonstrating st
   <img src="images/extended_loss_plot_1.png" width="85%">
 </p>
 
-> ⚠️ If this image does not load, rename the file to **extended_loss_plot.png**
-> or update the filename here to match exactly.
-
 ---
 
 ## 🏗️ Model Architecture
