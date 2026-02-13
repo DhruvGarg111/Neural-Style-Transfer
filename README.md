@@ -179,6 +179,50 @@ The Gradio interface will open in your browser at `http://localhost:7860`
 
 ---
 
+## 🔌 API Access (Hugging Face Space)
+
+This Gradio app now exposes a named API endpoint: `/stylize`.
+
+### Python (recommended)
+
+```bash
+pip install gradio_client
+```
+
+```python
+from gradio_client import Client, handle_file
+
+client = Client("DhruvGarg111/Style-Transfer")
+
+result = client.predict(
+    content_image=handle_file("input.jpg"),
+    style_choice="Style 1",
+    api_name="/stylize"
+)
+
+print("Output saved at:", result)
+```
+
+### cURL
+
+Replace `YOUR_SPACE_URL` with your Space URL (for example: `https://dhruvgarg111-style-transfer.hf.space`).
+
+```bash
+EVENT_ID=$(curl -s -X POST "YOUR_SPACE_URL/call/stylize" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": ["https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png", "Style 1"]
+  }' | python -c "import sys,json; print(json.load(sys.stdin)['event_id'])")
+
+curl -N "YOUR_SPACE_URL/call/stylize/$EVENT_ID"
+```
+
+For private Spaces, add `-H "Authorization: Bearer <HF_TOKEN>"` to both requests.
+
+You can verify the exact payload/endpoint format anytime from your Space's **Use via API** page.
+
+---
+
 ## 📁 Project Structure
 
 ```
