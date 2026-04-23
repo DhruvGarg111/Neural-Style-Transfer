@@ -80,6 +80,7 @@ interface = gr.Interface(
                 "Style 4",
             ],
             label="Select Style",
+            info="1: Vibrant impressionist, 2: Dark aesthetic, 3: Candy colors, 4: Mosaic pattern",
             value="Style 1",
         ),
     ],
