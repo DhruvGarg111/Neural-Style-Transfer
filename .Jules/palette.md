@@ -1,0 +1,3 @@
+## 2024-04-23 - Helper Text for Opaque API Values
+**Learning:** Sometimes API contracts or backward compatibility requires keeping non-descriptive option labels (e.g., "Style 1", "Style 2"). This presents a poor UX as users don't know what they represent without external documentation.
+**Action:** Use helper text or `info` parameters on form controls to provide descriptive context mapping the opaque values to their actual visual meanings (e.g., "Vibrant impressionist", "Dark aesthetic"), bridging the gap between API requirements and user comprehension.
