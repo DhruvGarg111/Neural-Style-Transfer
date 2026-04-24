@@ -24,7 +24,7 @@ class TransformerNet(torch.nn.Module):
         self.in5 = torch.nn.InstanceNorm2d(32, affine=True)
         self.deconv3 = ConvLayer(32, 3, kernel_size=9, stride=1)
 
-        # ⚡ Bolt: Use inplace=True to save VRAM and memory bandwidth during inference
+        # Bolt: Use inplace=True to save VRAM and memory bandwidth during inference
         self.relu = torch.nn.ReLU(inplace=True)
 
     def forward(self, X):
@@ -62,14 +62,14 @@ class ResidualBlock(torch.nn.Module):
         self.in1 = torch.nn.InstanceNorm2d(channels, affine=True)
         self.conv2 = ConvLayer(channels, channels, kernel_size=3, stride=1)
         self.in2 = torch.nn.InstanceNorm2d(channels, affine=True)
-        # ⚡ Bolt: Use inplace=True to save memory
+        # Bolt: Use inplace=True to save memory
         self.relu = torch.nn.ReLU(inplace=True)
 
     def forward(self, x):
         residual = x
         out = self.relu(self.in1(self.conv1(x)))
         out = self.in2(self.conv2(out))
-        # ⚡ Bolt: In-place addition to avoid allocating a new tensor for the output
+        # Bolt: In-place addition to avoid allocating a new tensor for the output
         out += residual
         return out
 
