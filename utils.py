@@ -12,8 +12,8 @@ def load_image(filename, size=None, scale=None):
 
 
 def save_image(filename, data):
-    img = data.clone().clamp(0, 255).numpy()
-    img = img.transpose(1, 2, 0).astype("uint8")
+    # Bolt: Avoid .clone() and use PyTorch's native byte() and permute() to save memory and skip NumPy typecasting
+    img = data.clamp(0, 255).byte().permute(1, 2, 0).cpu().numpy()
     img = Image.fromarray(img)
     img.save(filename)
 

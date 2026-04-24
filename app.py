@@ -55,9 +55,8 @@ def stylize_func(content_image, style_choice):
     with torch.inference_mode():
         output = style_model(content_image).cpu()
 
-    output = output[0].clone().clamp(0, 255).numpy()
-    
-    output = output.transpose(1, 2, 0).astype("uint8")
+    # Bolt: Avoid .clone() and use PyTorch's native byte() and permute() to save memory and skip NumPy typecasting
+    output = output[0].clamp(0, 255).byte().permute(1, 2, 0).numpy()
     
     stylized_image = Image.fromarray(output)
     
