@@ -53,11 +53,13 @@ def stylize_func(content_image, style_choice):
     content_image = CONTENT_TRANSFORM(content_image).unsqueeze(0).to(DEVICE)
 
     with torch.inference_mode():
-        output = style_model(content_image).cpu()
+        # Bolt: Clamp and cast to uint8 on the GPU before transferring to CPU.
+        # This reduces PCIe memory bandwidth by 75% and avoids a CPU clone.
+        output = style_model(content_image).clamp(0, 255).to(torch.uint8).cpu()
 
-    output = output[0].clone().clamp(0, 255).numpy()
+    output = output[0].numpy()
     
-    output = output.transpose(1, 2, 0).astype("uint8")
+    output = output.transpose(1, 2, 0)
     
     stylized_image = Image.fromarray(output)
     
