@@ -74,13 +74,13 @@ interface = gr.Interface(
         gr.Image(type="pil", label="Input Image"),
         gr.Radio(
             choices=[
-                "Style 1",
-                "Style 2",
-                "Style 3",
-                "Style 4",
+                ("Vibrant impressionist", "Style 1"),
+                ("Dark aesthetic", "Style 2"),
+                ("Candy colors", "Style 3"),
+                ("Mosaic pattern", "Style 4"),
             ],
             label="Select Style",
-            info="1: Vibrant impressionist, 2: Dark aesthetic, 3: Candy colors, 4: Mosaic pattern",
+            info="Choose an artistic style to apply to your image.",
             value="Style 1",
         ),
     ],
