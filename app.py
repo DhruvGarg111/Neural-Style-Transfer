@@ -87,6 +87,10 @@ interface = gr.Interface(
     outputs=gr.Image(type="pil", label="Stylized Output"),
     title=title,
     description=description,
+    examples=[
+        ["images/Example 1.png", "Style 1"],
+        ["images/Example 2.png", "Style 2"]
+    ],
     api_name="stylize",
     api_description="Stylize an input image with one of the available pretrained styles."
 )
