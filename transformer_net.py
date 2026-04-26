@@ -46,12 +46,12 @@ class ConvLayer(torch.nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
         super(ConvLayer, self).__init__()
         reflection_padding = kernel_size // 2
-        self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding)
-        self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride)
+        # Bolt: Combine ReflectionPad2d and Conv2d into a single layer with padding_mode='reflect'
+        # This prevents intermediate tensor allocations, saving VRAM and reducing memory bandwidth.
+        self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding=reflection_padding, padding_mode='reflect')
 
     def forward(self, x):
-        out = self.reflection_pad(x)
-        out = self.conv2d(out)
+        out = self.conv2d(x)
         return out
 
 
@@ -79,13 +79,13 @@ class UpsampleConvLayer(torch.nn.Module):
         super(UpsampleConvLayer, self).__init__()
         self.upsample = upsample
         reflection_padding = kernel_size // 2
-        self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding)
-        self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride)
+        # Bolt: Combine ReflectionPad2d and Conv2d into a single layer with padding_mode='reflect'
+        # This prevents intermediate tensor allocations, saving VRAM and reducing memory bandwidth.
+        self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding=reflection_padding, padding_mode='reflect')
 
     def forward(self, x):
         x_in = x
         if self.upsample:
             x_in = torch.nn.functional.interpolate(x_in, mode='nearest', scale_factor=self.upsample)
-        out = self.reflection_pad(x_in)
-        out = self.conv2d(out)
+        out = self.conv2d(x_in)
         return out
