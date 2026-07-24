@@ -44,7 +44,12 @@ def _load_style_model(model_path):
 
 
 def stylize_func(content_image, style_choice):
-    """Apply the selected style model to the input image."""
+    """Apply the selected style model to the input image.
+
+    The output tensor is clamped, rounded, and cast to uint8 on-device
+    before transferring to CPU, reducing PCIe bandwidth by 4x compared
+    to transferring float32 values.
+    """
     if content_image is None:
         raise gr.Error("Please upload an input image.")
 
@@ -53,16 +58,15 @@ def stylize_func(content_image, style_choice):
     content_image = CONTENT_TRANSFORM(content_image).unsqueeze(0).to(DEVICE)
 
     with torch.inference_mode():
-        # Bolt: Clamp and cast to uint8 on the GPU before transferring to CPU.
-        # This reduces PCIe memory bandwidth by 75% and avoids a CPU clone.
-        output = style_model(content_image).clamp(0, 255).to(torch.uint8).cpu()
+        output = style_model(content_image)
 
-    output = output[0].numpy()
-    
+    # Cast to uint8 on-device to shrink the PCIe transfer (4x smaller).
+    # .clone() is unnecessary: inference_mode disables autograd, and
+    # Conv2d output is a fresh allocation (not a view into model buffers).
+    gpu_uint8 = output[0].clamp(0, 255).round().to(torch.uint8)
+    output = gpu_uint8.cpu().numpy()
     output = output.transpose(1, 2, 0)
-    
     stylized_image = Image.fromarray(output)
-    
     return stylized_image
 
 # --- Gradio Interface ---
