@@ -1,9 +1,10 @@
-import torch
-from torchvision import transforms
-from PIL import Image
-import gradio as gr
 import os
 from functools import lru_cache
+
+import gradio as gr
+import torch
+from PIL import Image
+from torchvision import transforms
 
 from transformer_net import TransformerNet
 
