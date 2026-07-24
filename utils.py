@@ -12,8 +12,10 @@ def load_image(filename, size=None, scale=None):
 
 
 def save_image(filename, data):
-    img = data.clone().clamp(0, 255).numpy()
-    img = img.transpose(1, 2, 0).astype("uint8")
+    # Clamp and cast to uint8 on-tensor, removing the extra .clone() and
+    # avoiding a CPU-side .astype("uint8") copy.
+    img = data.clamp(0, 255).to(torch.uint8).cpu().numpy()
+    img = img.transpose(1, 2, 0)
     img = Image.fromarray(img)
     img.save(filename)
 
