@@ -1,10 +1,5 @@
-import importlib
 import pathlib
-import subprocess
 import sys
-import textwrap
-import types
-from unittest.mock import MagicMock, patch
 
 import gradio as gr
 import numpy as np
@@ -96,16 +91,25 @@ class TestHygiene:
     ROOT = pathlib.Path(__file__).resolve().parents[1]
 
     def test_no_crlf_in_python_files(self):
-        for p in self.ROOT.rglob("*.py"):
-            if "__pycache__" in str(p) or ".venv" in str(p):
+        import subprocess
+
+        result = subprocess.run(
+            ["git", "ls-files", "*.py"],
+            capture_output=True, text=True, cwd=str(self.ROOT),
+        )
+        for rel_path in result.stdout.strip().splitlines():
+            if not rel_path:
                 continue
+            p = self.ROOT / rel_path
             raw = p.read_bytes()
             assert b"\r\n" not in raw, f"{p.name} has CRLF line endings"
 
     def test_imports_sorted(self):
+        import subprocess
+
         pytest.importorskip("isort")
         result = subprocess.run(
-            ["python", "-m", "isort", "--check-only", "--diff", "."],
+            [sys.executable, "-m", "isort", "--check-only", "--diff", "--gitignore", "."],
             capture_output=True, text=True, cwd=str(self.ROOT),
         )
         assert result.returncode == 0, f"isort diff:\n{result.stdout}"
